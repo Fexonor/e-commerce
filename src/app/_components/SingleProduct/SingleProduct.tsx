@@ -1,0 +1,43 @@
+import React from "react";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+export default function SingleProduct({ product }) {
+  return (
+    <>
+      <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/5' >
+        <div className=' prod p-4'>
+          <Card className='gap-2'>
+            <CardHeader>
+              <CardTitle>
+                <img src={product.imageCover} alt='' />
+              </CardTitle>
+              <CardDescription className='text-emerald-500'>
+                {product.category.name}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='font-bold'>
+              <p className='line-clamp-1'>{product.title}</p>
+            </CardContent>
+            <CardFooter>
+              <div className='flex justify-between w-full'>
+                <span>{product.price} EGP</span>
+                <span>
+                  {product.ratingsAverage}{" "}
+                  <i className='fas fa-star text-yellow-500'></i>
+                </span>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    </>
+  );
+}
