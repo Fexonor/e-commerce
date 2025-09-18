@@ -16,6 +16,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { loginSchema, loginSchemaform } from "@/schema/login.schema";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   let router = useRouter();
@@ -29,24 +30,46 @@ export default function Login() {
   });
 
   async function handleLogin(values: loginSchemaform) {
-    try {
-      let res = await axios.post(
-        "https://ecommerce.routemisr.com/api/v1/auth/signin",
-        values
-      );
-      if (res.data.message === "success") {
-        toast.success("YOU Loged in Successfully", {
-          position: "top-center",
-          duration: 3000,
-        });
-        router.push("/");
-      }
-    } catch (err) {
-      toast.error(err.response.data.message, {
+    let response = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+      callbackUrl: "/",
+    });
+
+    console.log(response);
+
+    if (response?.ok) {
+      toast.success("YOU Loged in Successfully", {
+        position: "top-center",
+        duration: 3000,
+      });
+      window.location.href = "/";
+    } else {
+      toast.error(response?.error, {
         position: "top-center",
         duration: 3000,
       });
     }
+
+    // try {
+    //   let res = await axios.post(
+    //     "https://ecommerce.routemisr.com/api/v1/auth/signin",
+    //     values
+    //   );
+    //   if (res.data.message === "success") {
+    //     toast.success("YOU Loged in Successfully", {
+    //       position: "top-center",
+    //       duration: 3000,
+    //     });
+    //     router.push("/");
+    //   }
+    // } catch (err) {
+    //   toast.error(err.response.data.message, {
+    //     position: "top-center",
+    //     duration: 3000,
+    //   });
+    // }
   }
 
   return (
@@ -55,7 +78,6 @@ export default function Login() {
         <h1 className='text-3xl text-center font-bold my-4'>Login Now</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleLogin)}>
-  
             <FormField
               control={form.control}
               name='email'
