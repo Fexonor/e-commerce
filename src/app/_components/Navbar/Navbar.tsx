@@ -1,7 +1,16 @@
+'use client';
 import Link from "next/link";
 import React from "react";
+import { useSession } from "next-auth/react";
+
 
 export default function Navbar() {
+
+  const { data: session, status } = useSession();
+
+  console.log(session);
+  console.log(status);
+
   return (
     <>
       <nav className='bg-emerald-600 text-white'>
