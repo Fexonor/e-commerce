@@ -1,15 +1,17 @@
-'use client';
+"use client";
 import Link from "next/link";
 import React from "react";
-import { useSession } from "next-auth/react";
-
+import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
-
   const { data: session, status } = useSession();
 
   console.log(session);
   console.log(status);
+
+  function logout(){
+    signOut({callbackUrl: '/login'});
+  }
 
   return (
     <>
@@ -25,9 +27,11 @@ export default function Navbar() {
               <li>
                 <Link href='/'>Home</Link>
               </li>
-              <li>
-                <Link href='/cart'>Cart</Link>
-              </li>
+              {session && (
+                <li>
+                  <Link href='/cart'>Cart</Link>
+                </li>
+              )}
               <li>
                 <Link href='/products'>Products</Link>
               </li>
@@ -41,30 +45,39 @@ export default function Navbar() {
           </div>
           <div className='right'>
             <ul className='flex gap-4'>
-              <li>
-                <i className='fab fa-facebook'></i>
-              </li>
-              <li>
-                <i className='fab fa-twitter'></i>
-              </li>
-              <li>
-                <i className='fab fa-instagram'></i>
-              </li>
-              <li>
-                <i className='fab fa-tiktok'></i>
-              </li>
-              <li>
-                <i className='fab fa-linkedin'></i>
-              </li>
-              <li>
-                <Link href='/register'>Register</Link>
-              </li>
-              <li>
-                <Link href='/login'>Login</Link>
-              </li>
-              <li>
-                <Link href='/login'>Signout</Link>
-              </li>
+              {!session ? (
+                <>
+                  <li>
+                    <i className='fab fa-facebook'></i>
+                  </li>
+                  <li>
+                    <i className='fab fa-twitter'></i>
+                  </li>
+                  <li>
+                    <i className='fab fa-instagram'></i>
+                  </li>
+                  <li>
+                    <i className='fab fa-tiktok'></i>
+                  </li>
+                  <li>
+                    <i className='fab fa-linkedin'></i>
+                  </li>
+                  <li>
+                    <Link href='/register'>Register</Link>
+                  </li>
+                  <li>
+                    <Link href='/login'>Login</Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <span className="cursor-pointer" onClick={logout}>Signout</span>
+                  </li>
+
+                  {session && <li>HI {session?.user?.name}</li>}
+                </>
+              )}
             </ul>
           </div>
         </div>
