@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
+import { productType } from '@/types/product.type';
 import React from 'react'
 
-export default function Details({data}) {
+export default function Details({data} : {data : productType}) {
   return (
     <>
       <div className='container w-full  lg:w-[60%] mx-auto p-4 flex'>

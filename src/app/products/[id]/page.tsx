@@ -3,7 +3,7 @@ import Details from '@/app/_components/Details/Details';
 import { Button } from '@/components/ui/button';
 import React from 'react'
 
-export default async function productDetails({params}) {
+export default async function productDetails({params} : {params : {id : string}}) {
 
   const { id } = await params;
 
@@ -15,3 +15,4 @@ export default async function productDetails({params}) {
   return <>
     <Details data={data} />
   </>
+}
