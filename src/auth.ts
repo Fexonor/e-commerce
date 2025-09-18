@@ -16,21 +16,18 @@ export const authoptions: NextAuthOptions = {
         password: {},
       },
       authorize: async (credentials) => {
-        let response = await fetch(
-          `${process.env.API}/auth/signin`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        let response = await fetch(`${process.env.API}/auth/signin`, {
+          method: "POST",
+          body: JSON.stringify({
+            email: credentials?.email,
+            password: credentials?.password,
+          }),
+          headers: { "Content-Type": "application/json" },
+        });
 
         let payload = await response.json();
         console.log(payload);
-        
+
         if (payload.message === "success") {
           const decodedToken: { id: string } = jwtDecode(payload.token);
 
@@ -45,4 +42,20 @@ export const authoptions: NextAuthOptions = {
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+
+      if(user) {
+        token.user = user?.user;
+        token.token = user?.token;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = token.user;
+      return session;
+    },
+  },
 };
