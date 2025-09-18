@@ -16,8 +16,8 @@ export default function SingleProduct({ product }) {
     <>
       <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/5'>
         <div className=' prod p-4'>
-          <Link href={`/products/${product.id}`}>
-            <Card className='gap-2 p-2'>
+          <Card className='gap-2 p-2'>
+            <Link href={`/products/${product.id}`}>
               <CardHeader>
                 <CardTitle>
                   <img src={product.imageCover} alt='' />
@@ -38,9 +38,9 @@ export default function SingleProduct({ product }) {
                   </span>
                 </div>
               </CardFooter>
-              <Button className='cursor-pointer m-4'>Add to Cart</Button>
-            </Card>
-          </Link>
+            </Link>
+            <Button className='cursor-pointer m-4'>Add to Cart</Button>
+          </Card>
         </div>
       </div>
     </>
