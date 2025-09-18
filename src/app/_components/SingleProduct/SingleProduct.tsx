@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SingleProduct({ product }) {
   return (
@@ -20,7 +21,7 @@ export default function SingleProduct({ product }) {
             <Link href={`/products/${product.id}`}>
               <CardHeader>
                 <CardTitle>
-                  <img src={product.imageCover} alt='' />
+                  <Image src={product.imageCover} alt='' width={500} height={500} />
                 </CardTitle>
                 <CardDescription className='text-emerald-500'>
                   {product.category.name}
