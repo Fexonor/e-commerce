@@ -15,6 +15,7 @@ export const authoptions: NextAuthOptions = {
         email: {},
         password: {},
       },
+      // moataz
       authorize: async (credentials) => {
         const response = await fetch(`${process.env.API}/auth/signin`, {
           method: "POST",
