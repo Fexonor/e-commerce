@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { productType } from "@/types/product.type";
+import AddBtn from "../AddBtn/AddBtn";
 
 export default function SingleProduct({ product } : {product : productType}) {
   return (
@@ -41,7 +42,7 @@ export default function SingleProduct({ product } : {product : productType}) {
                 </div>
               </CardFooter>
             </Link>
-            <Button className='cursor-pointer m-4'>Add to Cart</Button>
+            <AddBtn id={product.id} />
           </Card>
         </div>
       </div>

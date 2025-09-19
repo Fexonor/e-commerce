@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { productType } from '@/types/product.type';
 import React from 'react'
+import AddBtn from '../AddBtn/AddBtn';
 
 export default function Details({data} : {data : productType}) {
   return (
@@ -23,7 +24,7 @@ export default function Details({data} : {data : productType}) {
                 <i className='fas fa-star text-yellow-500'></i>
               </span>
             </div>
-            <Button className='my-2 cursor-pointer w-full'>Add to Cart</Button>
+            <AddBtn id={data.id} />
           </div>
         </div>
       </div>
