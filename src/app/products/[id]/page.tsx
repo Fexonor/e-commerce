@@ -17,7 +17,7 @@ export default async function productDetails({
 
   if (!data) return <h1>No Products Here</h1>;
 
-  let RelatedProducts = await getRelatedProducts(data.category._id);
+  const RelatedProducts = await getRelatedProducts(data.category._id);
 
   console.log(RelatedProducts);
 

@@ -22,10 +22,10 @@ import onlinePayment from "@/checkoutActions/OnlineCheckout.action";
 
 
 export default function Checkout() {
-  let {id} : {id:string} = useParams();
+  const {id} : {id:string} = useParams();
 
 
-  let router = useRouter();
+  const router = useRouter();
 
   const form = useForm<checkoutSchemaType>({
     defaultValues: {
@@ -37,9 +37,10 @@ export default function Checkout() {
   });
 
   async function handleCheckout(values: checkoutSchemaType) {
-    console.log(values);
+    
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 
-    let res = await onlinePayment(id ,"" ,values )
+    const res = await onlinePayment(id, baseUrl, values);
     if(res.status === "success"){
       // console.log(res.session.url)
       window.location.href = res.session.url;

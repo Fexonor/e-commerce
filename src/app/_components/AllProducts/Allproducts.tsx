@@ -5,7 +5,7 @@ import { productType } from '@/types/product.type';
 
 export default async function Allproducts() {
 
-  let data = await getProducts()
+  const data = await getProducts()
   return (
     <>
       <div className='container w-[80%] mx-auto my-12'>

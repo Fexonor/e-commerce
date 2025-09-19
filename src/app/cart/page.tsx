@@ -1,5 +1,4 @@
 "use client";
-import { authoptions } from "@/auth";
 import clearCart from "@/cartActions/clearCartItem.action";
 import { getLoggedUserCart } from "@/cartActions/getUserCart.action";
 import { RemoveItemFromCart } from "@/cartActions/removCartItem.action";
@@ -7,14 +6,9 @@ import updateCartQuantity from "@/cartActions/update CartQuantity.action";
 import { Button } from "@/components/ui/button";
 import { CartContext } from "@/context/CartContext";
 import { CartProductype } from "@/types/cart,type";
-import getMyToken from "@/utlities/getMytoken";
-import { get } from "http";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React, { use, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { set } from "zod";
 
 
 
@@ -27,13 +21,17 @@ export default function Cart() {
   const [loadingUpdate, setloadingUpdate] = useState(false);
   const [currentId, setcurrentId] = useState('');
   const [removeDisabled, setremoveDisabled] = useState(false);
-  const { numberOfCartItem, setnumberOfCartItem } = useContext(CartContext);
   const [total, settotal] = useState(0);
   const [cartId, setcartId] = useState('')
 
+  const context = useContext(CartContext);
+  
+    if(!context) throw new Error('Not Exist')
+    const { numberOfCartItem, setnumberOfCartItem } = context;
+
   async function getUserCart() {
     try {
-      let res = await getLoggedUserCart();
+      const res = await getLoggedUserCart();
       if (res.status === "success") {
         setproducts(res.data.products);
         setisLoading(false);
@@ -48,7 +46,7 @@ export default function Cart() {
   async function deleteProduct(id : string){
         setremoveDisabled(true);
         setupdateDesiable(true);
-  let res = await RemoveItemFromCart(id);
+  const res = await RemoveItemFromCart(id);
   console.log(res);
   if(res.status === 'success'){
     setproducts(res.data.products)
@@ -73,7 +71,7 @@ export default function Cart() {
     setcurrentId(id);
     setloadingUpdate(true);
     setupdateDesiable(true);
-    let res = await updateCartQuantity(id,count);
+    const res = await updateCartQuantity(id,count);
     console.log(res);
     if(res.status === 'success'){
       setproducts(res.data.products);
@@ -98,7 +96,7 @@ export default function Cart() {
 
 
   async function clear (){
-    let res = await clearCart();
+    const res = await clearCart();
     console.log(res);
     if (res.message === "success") {
       setproducts([]);

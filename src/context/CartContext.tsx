@@ -26,7 +26,7 @@ export default function CartContextProvider({
 
   async function getUserCart() {
     try {
-      let res = await getLoggedUserCart();
+      const res = await getLoggedUserCart();
       if (res.status === "success") {
         let sum = 0;
         res.data.products.forEach((product: { count: number }) => {

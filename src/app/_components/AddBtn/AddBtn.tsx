@@ -7,10 +7,13 @@ import { toast } from "sonner";
 
 export default function AddBtn({ id }: { id: string }) {
 
-  const { numberOfCartItem, setnumberOfCartItem } = useContext(CartContext);
+  const context = useContext(CartContext);
+
+  if(!context) throw new Error('Not Exist')
+  const { numberOfCartItem, setnumberOfCartItem } = context;
 
   async function checkAddProduct(id: string) {
-    let res = await addToCart(id);
+    const res = await addToCart(id);
     console.log(res);
     if (res.status === "success") {
       toast.success("Product added to cart", {

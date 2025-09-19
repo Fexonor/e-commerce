@@ -8,13 +8,13 @@ export default async function clearCart(){
     throw new Error('please login first')
   }
 
-  let res = await fetch(`https://ecommerce.routemisr.com/api/v1/cart`, {
+  const res = await fetch(`https://ecommerce.routemisr.com/api/v1/cart`, {
     method: 'DELETE',
     headers: {
       token,
       "Content-Type": "application/json",
     }
   })
-  let payload = await res.json()
+  const payload = await res.json()
   return payload
 }

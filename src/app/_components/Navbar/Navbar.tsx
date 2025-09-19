@@ -5,7 +5,11 @@ import { signOut, useSession } from "next-auth/react";
 import { CartContext } from "@/context/CartContext";
 
 export default function Navbar() {
-  const {numberOfCartItem}= useContext(CartContext);
+
+  const context = useContext(CartContext);
+  
+    if(!context) throw new Error('Not Exist')
+  const { numberOfCartItem } = context;
   const { data: session, status } = useSession();
 
   console.log(session);

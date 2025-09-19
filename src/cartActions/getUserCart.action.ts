@@ -6,13 +6,13 @@ import { get } from "http";
 export async function getLoggedUserCart(){
 
 
-  let token = await getMyToken()
+  const token = await getMyToken()
 
   if(!token) {
     throw new Error('PLease login first')
   }
 
-  let res = await fetch("https://ecommerce.routemisr.com/api/v1/cart", {
+  const res = await fetch("https://ecommerce.routemisr.com/api/v1/cart", {
     method: "GET",
     headers: {
       token,
@@ -20,6 +20,6 @@ export async function getLoggedUserCart(){
     }
   });
 
-  let payload = await res.json();
+  const payload = await res.json();
   return payload;
 }

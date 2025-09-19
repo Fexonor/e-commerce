@@ -4,7 +4,7 @@ import CategorySwiper from '../CategorySwiper/CategorySwiper'
 
 export default async function CategorySlider() {
   
-  let data = await getAllCategories()
+  const data = await getAllCategories()
 
 
 

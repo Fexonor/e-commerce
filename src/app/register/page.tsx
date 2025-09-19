@@ -13,12 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { registerSchema, registerSchemaType } from "@/schema/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function Register() {
-  let router = useRouter();
+  const router = useRouter();
 
   const form = useForm<registerSchemaType>({
     defaultValues: {
@@ -33,7 +33,7 @@ export default function Register() {
 
   async function handleRegister(values: registerSchemaType) {
     try {
-      let res = await axios.post(
+      const res = await axios.post(
         "https://ecommerce.routemisr.com/api/v1/auth/signup",
         values
       );
@@ -44,11 +44,14 @@ export default function Register() {
         });
         router.push("/login");
       }
-    } catch (err) {
-      toast.error(err.response.data.message, {
-        position: "top-center",
-        duration: 3000,
-      });
+    } catch (err:unknown) {
+      if(err instanceof AxiosError){
+              toast.error(err.response?.data.message, {
+                position: "top-center",
+                duration: 3000,
+              });
+      }
+
     }
   }
 

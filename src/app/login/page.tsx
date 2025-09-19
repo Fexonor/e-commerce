@@ -19,7 +19,7 @@ import { loginSchema, loginSchemaform } from "@/schema/login.schema";
 import { signIn } from "next-auth/react";
 
 export default function Login() {
-  let router = useRouter();
+  const router = useRouter();
 
   const form = useForm<loginSchemaform>({
     defaultValues: {
@@ -30,7 +30,7 @@ export default function Login() {
   });
 
   async function handleLogin(values: loginSchemaform) {
-    let response = await signIn("credentials", {
+    const response = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,

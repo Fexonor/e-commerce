@@ -16,7 +16,7 @@ export const authoptions: NextAuthOptions = {
         password: {},
       },
       authorize: async (credentials) => {
-        let response = await fetch(`${process.env.API}/auth/signin`, {
+        const response = await fetch(`${process.env.API}/auth/signin`, {
           method: "POST",
           body: JSON.stringify({
             email: credentials?.email,
@@ -25,7 +25,7 @@ export const authoptions: NextAuthOptions = {
           headers: { "Content-Type": "application/json" },
         });
 
-        let payload = await response.json();
+        const payload = await response.json();
         console.log(payload);
 
         if (payload.message === "success") {

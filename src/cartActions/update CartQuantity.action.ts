@@ -9,7 +9,7 @@ export default async function updateCartQuantity(id : string,count : string){
     throw new Error('please login first')
   }
 
-  let res = await fetch(`https://ecommerce.routemisr.com/api/v1/cart/${id}`, {
+  const res = await fetch(`https://ecommerce.routemisr.com/api/v1/cart/${id}`, {
     method: 'PUT',
     headers: {
       token,
@@ -17,6 +17,6 @@ export default async function updateCartQuantity(id : string,count : string){
     },
     body: JSON.stringify({ count })
   });
-  let payload = await res.json();
+  const payload = await res.json();
   return payload;
 }
