@@ -1,15 +1,25 @@
 "use client";
 import { authoptions } from "@/auth";
 import { getLoggedUserCart } from "@/cartActions/getUserCart.action";
+import { RemoveItemFromCart } from "@/cartActions/removCartItem.action";
+import updateCartQuantity from "@/cartActions/update CartQuantity.action";
 import getMyToken from "@/utlities/getMytoken";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { set } from "zod";
+
+
+
 
 export default function Cart() {
   const [products, setproducts] = useState([]);
   const [isLoading, setisLoading] = useState(true);
+  const [updateDesiable, setupdateDesiable] = useState(false);
+  const [loadingUpdate, setloadingUpdate] = useState(false);
+  const [currentId, setcurrentId] = useState('');
+  const [removeDisabled, setremoveDisabled] = useState(false);
 
   async function getUserCart() {
     try {
@@ -22,6 +32,45 @@ export default function Cart() {
       setisLoading(false);
     }
   }
+
+  async function deleteProduct(id : string){
+        setremoveDisabled(true);
+   let res = await RemoveItemFromCart(id);
+   console.log(res);
+   if(res.status === 'success'){
+    setproducts(res.data.products)
+    toast.success('Product removed from cart', {duration: 2000, position: 'top-center'} )
+    setremoveDisabled(false);
+   }
+   else {
+    toast.error('Failed to remove product', {duration: 2000, position: 'top-center'} )
+    setremoveDisabled(false);
+   }
+  }
+
+  async function updateProduct(id : string,count : string){
+
+    setcurrentId(id);
+    setloadingUpdate(true);
+    setupdateDesiable(true);
+    let res = await updateCartQuantity(id,count);
+    console.log(res);
+    if(res.status === 'success'){
+      setproducts(res.data.products);
+      toast.success('Quantity updated successfully', {duration: 2000, position: 'top-center'});
+      setupdateDesiable(false);
+      setloadingUpdate(false);
+
+    }
+    else {
+      toast.error('Failed to update quantity', {duration: 2000, position: 'top-center'});
+      setupdateDesiable(false);
+      setloadingUpdate(false);
+
+    }
+  }
+
+ 
 
   useEffect(() => {
     getUserCart();
@@ -61,7 +110,10 @@ export default function Cart() {
               </thead>
               <tbody>
                 {products.map((product) => (
-                  <tr key={product._id} className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'>
+                  <tr
+                    key={product._id}
+                    className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'
+                  >
                     <td className='p-4'>
                       <img
                         src={product.product.imageCover}
@@ -75,7 +127,11 @@ export default function Cart() {
                     <td className='px-6 py-4'>
                       <div className='flex items-center'>
                         <button
-                          className='inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
+                          disabled={updateDesiable}
+                          onClick={() =>
+                            updateProduct(product.product.id, product.count - 1)
+                          }
+                          className='inline-flex disabled:bg-slate-300  items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
                           type='button'
                         >
                           <span className='sr-only'>Quantity button</span>
@@ -95,9 +151,21 @@ export default function Cart() {
                             />
                           </svg>
                         </button>
+                        {product.product.id === currentId ? (
+                          loadingUpdate ? (
+                            <i className='fas fa-spinner fa-spin'></i>
+                          ) : (
+                            <span>{product.count}</span>
+                          )
+                        ) : (
                           <span>{product.count}</span>
+                        )}
                         <button
-                          className='inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
+                          disabled={updateDesiable}
+                          onClick={() =>
+                            updateProduct(product.product.id, product.count + 1)
+                          }
+                          className='inline-flex disabled:bg-slate-300 items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
                           type='button'
                         >
                           <span className='sr-only'>Quantity button</span>
@@ -120,10 +188,16 @@ export default function Cart() {
                       </div>
                     </td>
                     <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                      {product.price} EGP
+                      {product.price * product.count} EGP
                     </td>
                     <td className='px-6 py-4'>
-                      <span className="text-red-500 font-semibold cursor-pointer">Remove</span>
+                      <button
+                        disabled={removeDisabled}
+                        onClick={() => deleteProduct(product.product.id)}
+                        className='text-red-500 font-semibold cursor-pointer disabled:text-white disabled:bg-slate-900 disabled:p-2 disabled:rounded-2xl'
+                      >
+                        Remove
+                      </button>
                     </td>
                   </tr>
                 ))}
