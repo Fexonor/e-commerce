@@ -5,6 +5,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 import Navbar from "./_components/Navbar/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import MySessionProvider from "@/MySessionProvider/MySessionProvider";
+import CartContextProvider from "@/context/CartCOntext";
 
 
 const geistSans = Geist({
@@ -34,10 +35,11 @@ export default function RootLayout({
       >
 
         <MySessionProvider>
-        <Toaster />
-        <Navbar />
-
-        {children}
+          <CartContextProvider>
+            <Toaster />
+            <Navbar />
+            {children}
+          </CartContextProvider>
         </MySessionProvider>
 
       </body>

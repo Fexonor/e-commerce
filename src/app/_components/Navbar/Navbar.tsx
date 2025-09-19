@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { CartContext } from "@/context/CartCOntext";
 
 export default function Navbar() {
+  const {numberOfCartItem}= useContext(CartContext);
   const { data: session, status } = useSession();
 
   console.log(session);
@@ -29,7 +31,7 @@ export default function Navbar() {
               </li>
               {session && (
                 <li>
-                  <Link href='/cart'>Cart</Link>
+                  <Link className="relative" href='/cart'>Cart{numberOfCartItem > 0 && <span className="absolute -top-2 -right-2 bg-white text-emerald-600 text-xs rounded-full px-1 font-semibold">{numberOfCartItem}</span>}</Link>
                 </li>
               )}
               <li>

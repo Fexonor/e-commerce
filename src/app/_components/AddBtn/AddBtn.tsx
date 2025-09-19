@@ -1,10 +1,14 @@
 "use client";
 import addToCart from "@/cartActions/addToCart.action";
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { CartContext } from "@/context/CartCOntext";
+import React, { useContext } from "react";
 import { toast } from "sonner";
 
 export default function AddBtn({ id }: { id: string }) {
+
+  const { numberOfCartItem, setnumberOfCartItem } = useContext(CartContext);
+
   async function checkAddProduct(id: string) {
     let res = await addToCart(id);
     console.log(res);
@@ -13,6 +17,7 @@ export default function AddBtn({ id }: { id: string }) {
         duration: 2000,
         position: "top-center",
       });
+      setnumberOfCartItem(numberOfCartItem + 1);
     } else {
       toast.error("cant add this product", {
         duration: 2000,
@@ -25,7 +30,7 @@ export default function AddBtn({ id }: { id: string }) {
     <>
       <Button
         onClick={() => checkAddProduct(id)}
-        className='cursor-pointer m-4 w-full'
+        className='cursor-pointer w-full '
       >
         Add to Cart
       </Button>

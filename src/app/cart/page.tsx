@@ -5,11 +5,12 @@ import { getLoggedUserCart } from "@/cartActions/getUserCart.action";
 import { RemoveItemFromCart } from "@/cartActions/removCartItem.action";
 import updateCartQuantity from "@/cartActions/update CartQuantity.action";
 import { Button } from "@/components/ui/button";
+import { CartContext } from "@/context/CartCOntext";
 import getMyToken from "@/utlities/getMytoken";
 import { get } from "http";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { set } from "zod";
 
@@ -24,6 +25,7 @@ export default function Cart() {
   const [loadingUpdate, setloadingUpdate] = useState(false);
   const [currentId, setcurrentId] = useState('');
   const [removeDisabled, setremoveDisabled] = useState(false);
+  const { numberOfCartItem, setnumberOfCartItem } = useContext(CartContext);
 
   async function getUserCart() {
     try {
@@ -39,20 +41,28 @@ export default function Cart() {
 
   async function deleteProduct(id : string){
         setremoveDisabled(true);
+        setupdateDesiable(true);
   let res = await RemoveItemFromCart(id);
   console.log(res);
   if(res.status === 'success'){
     setproducts(res.data.products)
     toast.success('Product removed from cart', {duration: 2000, position: 'top-center'} )
+    let sum = 0;
+    res.data.products.forEach((product) => {
+      sum += product.count;
+    })
+    setnumberOfCartItem(sum);
     setremoveDisabled(false);
+    setupdateDesiable(false);
   } else {
     toast.error('Failed to remove product', {duration: 2000, position: 'top-center'} )
     setremoveDisabled(false);
+    setupdateDesiable(false);
   }
   }
 
-  async function updateProduct(id : string,count : string){
-
+  async function updateProduct(id : string,count : string,sign: string){
+    setremoveDisabled(true);
     setcurrentId(id);
     setloadingUpdate(true);
     setupdateDesiable(true);
@@ -61,15 +71,20 @@ export default function Cart() {
     if(res.status === 'success'){
       setproducts(res.data.products);
       toast.success('Quantity updated successfully', {duration: 2000, position: 'top-center'});
+      if(sign === '+'){
+        setnumberOfCartItem(numberOfCartItem + 1);
+      }else if(sign === '-'){
+        setnumberOfCartItem(numberOfCartItem - 1);
+      }
       setupdateDesiable(false);
       setloadingUpdate(false);
-
+      setremoveDisabled(false);
     }
     else {
       toast.error('Failed to update quantity', {duration: 2000, position: 'top-center'});
       setupdateDesiable(false);
       setloadingUpdate(false);
-
+      setremoveDisabled(false);
     }
   }
 
@@ -149,7 +164,7 @@ export default function Cart() {
                         <button
                           disabled={updateDesiable}
                           onClick={() =>
-                            updateProduct(product.product.id, product.count - 1)
+                            updateProduct(product.product.id, product.count - 1,'-')
                           }
                           className='inline-flex disabled:bg-slate-300  items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
                           type='button'
@@ -183,7 +198,7 @@ export default function Cart() {
                         <button
                           disabled={updateDesiable}
                           onClick={() =>
-                            updateProduct(product.product.id, product.count + 1)
+                            updateProduct(product.product.id, product.count + 1,'+')
                           }
                           className='inline-flex disabled:bg-slate-300 items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
                           type='button'
