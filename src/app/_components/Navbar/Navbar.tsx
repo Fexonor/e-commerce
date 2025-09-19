@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useContext } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { CartContext } from "@/context/CartCOntext";
+import { CartContext } from "@/context/CartContext";
 
 export default function Navbar() {
   const {numberOfCartItem}= useContext(CartContext);

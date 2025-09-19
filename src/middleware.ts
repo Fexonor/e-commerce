@@ -5,12 +5,20 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
 
   if (token) {
+
+    if(request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register'){
+      return NextResponse.redirect(new URL("/", request.url));
+    }else{
+      return NextResponse.next();
+    }
+  }else{
+    if(request.nextUrl.pathname === '/cart'){
+      return NextResponse.redirect(new URL("/login", request.url));
+  }else {
     return NextResponse.next();
   }
-
-  return NextResponse.redirect(new URL("/login", request.url));
-}
+}}
 
 export const config = {
-  matcher: ["/cart"],
-};
+  matcher: ["/cart",'/login','/register'],
+}

@@ -5,7 +5,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
 import Navbar from "./_components/Navbar/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import MySessionProvider from "@/MySessionProvider/MySessionProvider";
-import CartContextProvider from "@/context/CartCOntext";
+import CartContextProvider from "@/context/CartContext";
 
 
 const geistSans = Geist({

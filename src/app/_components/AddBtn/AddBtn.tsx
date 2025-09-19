@@ -1,7 +1,7 @@
 "use client";
 import addToCart from "@/cartActions/addToCart.action";
 import { Button } from "@/components/ui/button";
-import { CartContext } from "@/context/CartCOntext";
+import { CartContext } from "@/context/CartContext";
 import React, { useContext } from "react";
 import { toast } from "sonner";
 
@@ -19,7 +19,7 @@ export default function AddBtn({ id }: { id: string }) {
       });
       setnumberOfCartItem(numberOfCartItem + 1);
     } else {
-      toast.error("cant add this product", {
+      toast.error(res.message, {
         duration: 2000,
         position: "top-center",
       });

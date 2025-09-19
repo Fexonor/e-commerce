@@ -3,7 +3,8 @@ import getMyToken from "@/utlities/getMytoken";
 
 export default async function addToCart(id : string) {
 
-  const token = await getMyToken();
+try {
+    const token = await getMyToken();
 
   if(!token){
     throw new Error("You must be logged in to add to cart")
@@ -23,4 +24,9 @@ export default async function addToCart(id : string) {
 
   return payload;
 
+}
+catch(err){
+ 
+  return err
+}
 }
