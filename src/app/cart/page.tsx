@@ -76,7 +76,8 @@ export default function Cart() {
 
   async function clear (){
     let res = await clearCart();
-    if(res.status === 'success'){\
+    console.log(res);
+    if (res.message === "success") {
       setproducts([]);
     }
   }
