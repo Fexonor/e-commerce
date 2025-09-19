@@ -10,6 +10,7 @@ import { CartProductype } from "@/types/cart,type";
 import getMyToken from "@/utlities/getMytoken";
 import { get } from "http";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { use, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -27,7 +28,8 @@ export default function Cart() {
   const [currentId, setcurrentId] = useState('');
   const [removeDisabled, setremoveDisabled] = useState(false);
   const { numberOfCartItem, setnumberOfCartItem } = useContext(CartContext);
-  const [total, settotal] = useState(0)
+  const [total, settotal] = useState(0);
+  const [cartId, setcartId] = useState('')
 
   async function getUserCart() {
     try {
@@ -36,6 +38,7 @@ export default function Cart() {
         setproducts(res.data.products);
         setisLoading(false);
         settotal(res.data.totalCartPrice)
+        setcartId(res.cartId);
       }
     } catch (err) {
       setisLoading(false);
@@ -129,7 +132,9 @@ export default function Cart() {
             </Button>
           </div>
           <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
-            <h1 className="text-center text-3xl font-bold text-emerald-600 my-4 ">Total Cart Price : {total}</h1>
+            <h1 className='text-center text-3xl font-bold text-emerald-600 my-4 '>
+              Total Cart Price : {total}
+            </h1>
             <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
               <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                 <tr>
@@ -254,6 +259,11 @@ export default function Cart() {
               </tbody>
             </table>
           </div>
+          <Link href={`/checkout/${cartId}`}>
+            <Button className='bg-emerald-600 text-white w-full cursor-pointer my-4 p-6 hover:bg-emerald-700'>
+              Checkout Now
+            </Button>
+          </Link>
         </div>
       ) : (
         <h1 className='text-center text-3xl my-12 text-red-500 font-bold'>
