@@ -1,14 +1,18 @@
 "use client";
 import { authoptions } from "@/auth";
+import clearCart from "@/cartActions/clearCartItem.action";
 import { getLoggedUserCart } from "@/cartActions/getUserCart.action";
 import { RemoveItemFromCart } from "@/cartActions/removCartItem.action";
 import updateCartQuantity from "@/cartActions/update CartQuantity.action";
+import { Button } from "@/components/ui/button";
 import getMyToken from "@/utlities/getMytoken";
+import { get } from "http";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React, { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { set } from "zod";
+
 
 
 
@@ -35,17 +39,16 @@ export default function Cart() {
 
   async function deleteProduct(id : string){
         setremoveDisabled(true);
-   let res = await RemoveItemFromCart(id);
-   console.log(res);
-   if(res.status === 'success'){
+  let res = await RemoveItemFromCart(id);
+  console.log(res);
+  if(res.status === 'success'){
     setproducts(res.data.products)
     toast.success('Product removed from cart', {duration: 2000, position: 'top-center'} )
     setremoveDisabled(false);
-   }
-   else {
+  } else {
     toast.error('Failed to remove product', {duration: 2000, position: 'top-center'} )
     setremoveDisabled(false);
-   }
+  }
   }
 
   async function updateProduct(id : string,count : string){
@@ -70,7 +73,15 @@ export default function Cart() {
     }
   }
 
- 
+
+  async function clear (){
+    let res = await clearCart();
+    if(res.status === 'success'){\
+      setproducts([]);
+    }
+  }
+
+
 
   useEffect(() => {
     getUserCart();
@@ -87,6 +98,14 @@ export default function Cart() {
     <>
       {products?.length > 0 ? (
         <div className='w-2/3 mx-auto my-12'>
+          <div className='flex justify-end'>
+            <Button
+              onClick={() => clear()}
+              className='cursor-pointer my-4 bg-red-500 hover:bg-red-700'
+            >
+              Clear Cart Items
+            </Button>
+          </div>
           <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
             <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
               <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
